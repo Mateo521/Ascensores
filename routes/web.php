@@ -19,7 +19,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 // Pública (QR)
 Route::get('/a/{slug}', [PublicoController::class, 'show'])->name('ascensor.publico');
-
+Route::get('/a/{slug}/pdf', [PublicoController::class, 'pdf'])->name('ascensor.publico.pdf');
 // Root
 Route::get('/', fn() => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login'));
 

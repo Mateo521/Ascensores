@@ -25,7 +25,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', // si estás en Laravel 10/11/12 esto hashea en automático
+            'password' => 'hashed',  
         ];
     }
 }
