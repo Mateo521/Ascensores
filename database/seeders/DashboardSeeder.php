@@ -24,7 +24,7 @@ class DashboardSeeder extends Seeder
             ]
         );
 
-        $this->command->info('✅ Usuario técnico creado: tecnico@test.com / password');
+ 
 
         // Crear algunos ascensores de prueba
         $ascensores = [
