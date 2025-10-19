@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AscensorController;
 use App\Http\Controllers\PublicoController;
+use App\Http\Controllers\RevisionesController;
 use Illuminate\Support\Facades\Route;
 
 // Rutas de autenticación
@@ -43,4 +44,13 @@ Route::get('/a/{slug}', [PublicoController::class, 'show'])->name('ascensor.publ
 // Redirección raíz
 Route::get('/', function () {
     return auth()->check() ? redirect('/dashboard') : redirect('/login');
+});
+
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/revisiones', [RevisionesController::class, 'index'])->name('revisiones.index');
+    Route::get('/revisiones/create', [RevisionesController::class, 'create'])->name('revisiones.create');
+    Route::post('/revisiones', [RevisionesController::class, 'store'])->name('revisiones.store');
 });

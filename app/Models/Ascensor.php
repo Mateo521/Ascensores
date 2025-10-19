@@ -45,4 +45,8 @@ class Ascensor extends Model
     {
         return $this->hasMany(Revision::class)->where('estado', 'completada');
     }
+    public function create()
+{
+    return Inertia::render('Ascensores/Create');
+}
 }

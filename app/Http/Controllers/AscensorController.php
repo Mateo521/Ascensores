@@ -55,14 +55,36 @@ class AscensorController extends Controller
             ->with('success', 'Ascensor creado exitosamente');
     }
 
-    public function show(Ascensor $ascensor)
+ public function show(Ascensor $ascensor)
     {
-        $ascensor->load(['revisiones' => function ($query) {
-            $query->latest()->take(10);
+        // Cargar últimas 10 revisiones
+        $ascensor->load(['revisiones' => function ($q) {
+            $q->orderBy('fecha', 'desc')->take(10)->with('usuario');
         }]);
 
+        $revisiones = $ascensor->revisiones->map(function ($r) {
+            return [
+                'id' => $r->id,
+                'fecha' => optional($r->fecha)->format('d/m/Y'),
+                'estado' => $r->estado,
+                'tecnico' => optional($r->usuario)->name,
+                'observaciones' => $r->observaciones ? Str::limit($r->observaciones, 120) : null,
+            ];
+        })->values();
+
+        // Props para la vista
         return Inertia::render('Ascensores/Show', [
-            'ascensor' => $ascensor,
+            'ascensor' => [
+                'id' => $ascensor->id,
+                'codigo_interno' => $ascensor->codigo_interno,
+                'edificio' => $ascensor->edificio,
+                'direccion' => $ascensor->direccion,
+                'numero_ascensor' => $ascensor->numero_ascensor,
+                'descripcion' => $ascensor->descripcion,
+                'estado' => $ascensor->estado,
+                'qr_slug' => $ascensor->qr_slug,
+            ],
+            'revisiones' => $revisiones,
         ]);
     }
 
