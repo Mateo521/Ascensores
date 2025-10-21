@@ -159,20 +159,32 @@
             <div class="value" style="font-weight: 500;">{{ $ascensor->descripcion ?? '—' }}</div>
 
             <div style="margin-top:14px;" class="label">Calendario anual</div>
+            @php
+                $nombres = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            @endphp
+
             <div class="calendar" style="margin-top:6px;">
-                @php
-                    $nombres = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-                @endphp
                 @for ($m = 1; $m <= 12; $m++)
                     <div class="month">
                         <h4>{{ $nombres[$m] }}</h4>
-                        <div>
-                            <span class="check {{ $meses[$m] ? 'on' : '' }}"></span>
-                            <span>{{ $meses[$m] ? 'Revisión completada' : 'Pendiente' }}</span>
-                        </div>
+                        @if (is_array($meses[$m]) && ($meses[$m]['firma_tecnico'] ?? null))
+                            <img src="{{ $meses[$m]['firma_tecnico'] }}" alt="Firma técnico"
+                                style="width: 100%; max-height: 70px; object-fit: contain; border: 1px solid #eee; border-radius: 4px; padding: 2px; background: #fff" />
+                            <div style="font-size:10px; color:#666; margin-top:2px;">
+                                {{ $meses[$m]['tecnico_nombre'] ?? 'Técnico' }} — {{ $meses[$m]['fecha'] ?? '' }}
+                            </div>
+                        @else
+                            <div>
+                                <span
+                                    class="check {{ (is_array($meses[$m]) ? ($meses[$m]['checked'] ?? false) : $meses[$m]) ? 'on' : '' }}"></span>
+                                <span>{{ (is_array($meses[$m]) ? ($meses[$m]['checked'] ?? false) : $meses[$m]) ? 'Revisión completada' : 'Pendiente' }}</span>
+                            </div>
+                            <div style="font-size:10px; color:#aaa; margin-top:6px;">Firma técnico</div>
+                        @endif
                     </div>
                 @endfor
             </div>
+
 
             <div class="legend">Marcado ✓ cuando el mes tiene al menos una revisión completada.</div>
         </div>

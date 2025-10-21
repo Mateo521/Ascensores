@@ -36,7 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/revisiones', [RevisionesController::class, 'index'])->name('revisiones.index');
     Route::get('/revisiones/create', [RevisionesController::class, 'create'])->name('revisiones.create');
     Route::post('/revisiones', [RevisionesController::class, 'store'])->name('revisiones.store');
-
+    Route::get('/revisiones/{revision}', [RevisionesController::class, 'show'])
+        ->name('revisiones.show');
+    Route::put('/revisiones/{revision}', [RevisionesController::class, 'update'])
+        ->name('revisiones.update');
     // Perfil
     Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
     Route::put('/perfil', [PerfilController::class, 'updateProfile'])->name('perfil.update');
@@ -53,6 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/configuracion', [ConfiguracionController::class, 'update'])
         ->middleware('can:manage-settings')
         ->name('configuracion.update');
+
+
 
     // Reportes
     Route::get('/reportes', [ReportesController::class, 'index'])->name('reportes.index');

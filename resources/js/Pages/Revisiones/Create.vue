@@ -3,6 +3,7 @@
 import { Head, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { reactive, computed, watch } from 'vue'
+import SignaturePad from '@/Components/SignaturePad.vue'
 import { useOfflineQueue } from '@/composables/useOfflineQueue.js'
 import axios from 'axios'
 
@@ -37,6 +38,10 @@ const form = reactive({
     observacion: '',
   },
   observaciones: '',
+    firma_tecnico_base64: '', // ← nuevo
+  firma_cliente_base64: '', // ← opcional
+  firma_tecnico_nombre: '', // texto
+  firma_cliente_nombre: '', // texto
 })
 
 const selectedAscensorId = reactive({ value: form.ascensor_id })
@@ -45,29 +50,46 @@ watch(() => selectedAscensorId.value, (val) => {
   form.ascensor_id = val
 })
 
+function validarAntesDeGuardar() {
+  if (form.estado === 'completada') {
+    if (!form.firma_tecnico_nombre || !form.firma_tecnico_base64) {
+      alert('Para marcar como completada, ingrese el nombre del técnico y cargue la firma.')
+      return false
+    }
+  }
+  if (!form.ascensor_id) {
+    alert('Seleccione un ascensor')
+    return false
+  }
+  return true
+}
+
+
 async function guardar() {
+  if (!validarAntesDeGuardar()) return
+
+  const payload = {
+    ascensor_id: form.ascensor_id,
+    fecha: form.fecha,
+    estado: form.estado,
+    observaciones: form.observaciones,
+    formulario: {
+      ...form.formulario,
+      visitas: [{
+        ...form.formulario.visitas[0],
+        fecha: form.fecha,
+        hora: form.hora,
+        completado: form.estado === 'completada'
+      }]
+    },
+    // ENVIAR FIRMAS
+    firma_tecnico_nombre: form.firma_tecnico_nombre || null,
+    firma_tecnico_base64: form.firma_tecnico_base64 || null,
+    firma_cliente_nombre: form.firma_cliente_nombre || null,
+    firma_cliente_base64: form.firma_cliente_base64 || null,
+  }
+
   try {
-    if (!form.ascensor_id) {
-      alert('Seleccione un ascensor')
-      return
-    }
-
-    const payload = {
-      ascensor_id: form.ascensor_id,
-      fecha: form.fecha,
-      estado: form.estado,
-      observaciones: form.observaciones,
-      formulario: {
-        ...form.formulario,
-        visitas: [{
-          ...form.formulario.visitas[0],
-          fecha: form.fecha,
-          hora: form.hora,
-          completado: form.estado === 'completada'
-        }]
-      }
-    }
-
     if (online.value) {
       await axios.post('/revisiones', payload)
       alert('Revisión guardada (online)')
@@ -145,8 +167,21 @@ async function sincronizarPendientes() {
 
           <hr>
 
-          <!-- Resto del formulario (igual que ya tenías) -->
-          <!-- ... campos: numero_serie, marca, proveedor, etc ... -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <div>
+      <label class="block text-sm font-medium">Firma del técnico</label>
+      <input v-model="form.firma_tecnico_nombre" placeholder="Nombre del técnico" class="border rounded p-2 w-full mb-2">
+      <SignaturePad v-model="form.firma_tecnico_base64" :width="500" :height="160" />
+      <p class="text-xs text-gray-500 mt-1">Requerido si la revisión se marca como “Completada”.</p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium">Firma del responsable (opcional)</label>
+      <input v-model="form.firma_cliente_nombre" placeholder="Nombre del responsable" class="border rounded p-2 w-full mb-2">
+      <SignaturePad v-model="form.firma_cliente_base64" :width="500" :height="160" />
+    </div>
+  </div>
+           
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium">Número de serie</label>

@@ -19,7 +19,7 @@ defineProps({
         
         <!-- Header -->
         <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <h1 class="text-3xl font-bold text-gray-900">Panel principal</h1>
           <p class="text-gray-600 mt-1">Sistema de Gestión de Ascensores - San Luis</p>
         </div>
 
@@ -227,10 +227,9 @@ defineProps({
                       </span>
                     </p>
                   </div>
-                  <Link :href="`/revisiones/${revision.id}`" 
-                        class="text-blue-600 hover:text-blue-800 text-sm font-medium whitespace-nowrap">
-                    Realizar →
-                  </Link>
+                <Link :href="`/revisiones/${revision.id}`" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+  Realizar →
+</Link>
                 </div>
               </div>
               <div v-else class="text-center py-8 text-gray-500">

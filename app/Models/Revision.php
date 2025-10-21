@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Revision extends Model
 {
-    protected $table = 'revisiones'; // ← ASEGÚRATE QUE ESTA LÍNEA ESTÉ
+    protected $table = 'revisiones';  
 
     protected $fillable = [
         'ascensor_id',
@@ -21,6 +21,7 @@ class Revision extends Model
 
     protected $casts = [
         'fecha' => 'date',
+        'firmado_at' => 'datetime',
         'formulario' => 'array',
         'sincronizado' => 'boolean',
     ];
@@ -56,6 +57,6 @@ class Revision extends Model
     public function scopeMesActual($query)
     {
         return $query->whereMonth('fecha', now()->month)
-                    ->whereYear('fecha', now()->year);
+            ->whereYear('fecha', now()->year);
     }
 }

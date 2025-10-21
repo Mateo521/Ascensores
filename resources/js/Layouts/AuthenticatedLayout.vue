@@ -3,6 +3,7 @@
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
+
 const page = usePage()
 const user = computed(() => page.props.auth.user)
 const showUserMenu = ref(false)
@@ -18,17 +19,15 @@ function logout() {
     <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-26">
           
           <!-- Logo y navegación principal -->
           <div class="flex">
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
               <Link href="/dashboard" class="text-xl font-bold text-blue-600 flex items-center">
-                <svg class="h-8 w-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                Ascensores SL
+                 <img src="/storage/logo.png" alt="Logo" class="h-full w-32 mr-2" />
+
               </Link>
             </div>
 
@@ -39,7 +38,7 @@ function logout() {
                     :class="$page.url === '/dashboard' 
                       ? 'border-blue-500 text-gray-900' 
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'">
-                Dashboard
+                Panel principal
               </Link>
 
               <Link href="/ascensores" 
@@ -130,7 +129,7 @@ function logout() {
                 :class="$page.url === '/dashboard' 
                   ? 'bg-blue-50 border-blue-500 text-blue-700' 
                   : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'">
-            Dashboard
+            Panel principal
           </Link>
 
           <Link href="/ascensores" 
