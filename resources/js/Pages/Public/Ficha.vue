@@ -1,14 +1,14 @@
 <script setup>
 // Desestructura las props para poder usarlas en el script
-const { ascensor, meses, qr_url, ultima_actualizacion, año, compact } = defineProps({
+const { ascensor, meses, qr_url, ultima_actualizacion, año, compact, empresa } = defineProps({
   ascensor: Object,
-  meses: Object,               // {1:{checked, fecha, tecnico_nombre, firma_tecnico}, ...}
+  meses: Object,
   qr_url: String,
   ultima_actualizacion: String,
   año: Number,
-  compact: Boolean
+  compact: Boolean,
+  empresa: Object, // ← importante
 })
-
 const nombresMes = [
   '', 'Enero','Febrero','Marzo','Abril','Mayo','Junio',
   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
@@ -33,18 +33,39 @@ function firmaInfo(m) {
 <template>
   <div class="min-h-screen bg-gray-100 flex flex-col items-center py-8 px-4">
     <div class="bg-white shadow-xl rounded-2xl p-6 w-full max-w-5xl">
+
+
+
+
+
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-        <div>
-          <h1 class="text-2xl font-bold">Calendario anual de mantenimiento ({{ año }})</h1>
-          <p class="text-sm text-gray-500">Última actualización: {{ ultima_actualizacion || '—' }}</p>
-        </div>
-        <div class="flex gap-2">
-          <a :href="`/a/${ascensor.qr_slug}/pdf`"
-             class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
-            Descargar PDF
-          </a>
-        </div>
+      
+      
+      
+      
+           <!-- Encabezado con logo + cuadro info -->
+       <div class="flex items-start justify-between gap-4 mb-4">
+    <div class="flex items-center gap-3">
+      <img v-if="empresa?.logo_url" :src="empresa.logo_url" alt="Logo" class="h-12 object-contain">
+      <div class="text-lg font-semibold">{{ empresa?.nombre || '' }}</div>
+    </div>
+    <div class="border rounded-lg p-3 text-sm leading-tight">
+      <div>San Luis, {{ new Date().toLocaleDateString('es-AR', { day:'2-digit', month:'long', year:'numeric' }) }}</div>
+      <div v-if="empresa?.inicio_actividad">Inicio de actividad: {{ new Date(empresa.inicio_actividad).toLocaleDateString('es-AR') }}</div>
+      <div v-if="empresa?.cuit">CUIT Nº {{ empresa.cuit }}</div>
+    </div>
+  </div>
+
+      <!-- Botón PDF -->
+      <div class="flex justify-end mb-2">
+        <a :href="`/a/${ascensor.qr_slug}/pdf`" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
+          Descargar PDF
+        </a>
+      </div>
+
+
+
       </div>
 
       <!-- Datos + QR (oculto en modo compacto) -->
@@ -124,6 +145,9 @@ function firmaInfo(m) {
       <div v-if="compact" class="mt-6 text-center">
         <a :href="qr_url" class="text-blue-600 hover:text-blue-800 text-sm">Ver ficha completa</a>
       </div>
+        <div class="mt-6 text-center text-sm font-semibold" v-if="empresa?.telefono">
+    EMERGENCIAS TELÉFONO {{ empresa.telefono }}
+  </div>
     </div>
   </div>
 </template>

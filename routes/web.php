@@ -45,10 +45,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/perfil', [PerfilController::class, 'updateProfile'])->name('perfil.update');
     Route::put('/perfil/password', [PerfilController::class, 'updatePassword'])->name('perfil.password');
 
-    // Configuración (opcional: restringir a admin con Gate)
-    Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
-    Route::put('/configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
-
+    Route::middleware(['auth', 'can:manage-settings'])->group(function () {
+        Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
+        Route::put('/configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
+    });
 
     Route::get('/configuracion', [ConfiguracionController::class, 'index'])
         ->middleware('can:manage-settings')
